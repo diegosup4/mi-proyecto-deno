@@ -32,13 +32,14 @@ jobs:
 
       # 4. Instalar dependencias y cachear
       - name: Cache dependencies
-        run: deno cache src/main.ts
+        run: deno cache src/main.ts tests/main.test.ts
 
       # 5. Ejecutar tests con cobertura
       - name: Run tests
         run: |
           deno task test
           deno task coverage
+        continue-on-error: false
 
       # 6. Build de la aplicación (verificar que compila)
       - name: Build check
@@ -66,7 +67,7 @@ jobs:
         run: |
           echo "# Reporte de Ejecución CI/CD" > report.md
           echo "" >> report.md
-          echo "## ℹ️ Información General" >> report.md
+          echo "##  Información General" >> report.md
           echo "- **Fecha:** $(date)" >> report.md
           echo "- **Commit:** ${{ github.sha }}" >> report.md
           echo "- **Branch:** ${{ github.ref_name }}" >> report.md
@@ -84,7 +85,14 @@ jobs:
           echo "-  Build de Docker image" >> report.md
           echo "" >> report.md
           echo "##  Resultados" >> report.md
-          echo "Pipeline ejecutado" >> report.md
+          echo "Pipeline ejecutado exitosamente " >> report.md
+
+          # Agregar info de tests si existen
+          if [ -f "coverage.lcov" ]; then
+            echo "" >> report.md
+            echo "##  Cobertura de Tests" >> report.md
+            echo "- Archivo de cobertura generado: " >> report.md
+          fi
 
       # 11. Upload del reporte como artefacto
       - name: Upload execution report
@@ -94,10 +102,11 @@ jobs:
           name: execution-report
           path: report.md
 
-      # 12. Upload coverage report
+      # 12. Upload coverage report (solo si existe)
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage.lcov
+          if-no-files-found: warn # Solo avisa si no encuentra archivos, no falla
