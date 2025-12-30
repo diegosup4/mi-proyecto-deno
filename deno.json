@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-read src/main.ts",
+    "start": "deno run --allow-net --allow-read src/main.ts",
+    "test": "deno test --allow-net --coverage=coverage",
+    "coverage": "deno coverage coverage --lcov --output=coverage.lcov"
+  },
+  "imports": {
+    "std/": "https://deno.land/std@0.208.0/"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window"]
+  }
+}
