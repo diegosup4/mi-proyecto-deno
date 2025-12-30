@@ -1,0 +1,50 @@
+{
+  "scriptId": "335",
+  "url": "file:///C:/Users/diego/Desktop/mi-proyecto-deno/src/server.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [
+        {
+          "startOffset": 0,
+          "endOffset": 255,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createServer",
+      "ranges": [
+        {
+          "startOffset": 7,
+          "endOffset": 157,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "add",
+      "ranges": [
+        {
+          "startOffset": 165,
+          "endOffset": 203,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "multiply",
+      "ranges": [
+        {
+          "startOffset": 211,
+          "endOffset": 254,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}
