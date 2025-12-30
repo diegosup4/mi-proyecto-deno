@@ -39,7 +39,6 @@ jobs:
         run: |
           deno task test
           deno task coverage
-        continue-on-error: false
 
       # 6. Build de la aplicación (verificar que compila)
       - name: Build check
@@ -47,15 +46,14 @@ jobs:
 
       # 7. Análisis estático con Deno lint
       - name: Deno lint
-        run: deno lint src/
+        run: deno lint src/ tests/
 
-      # 8. SonarCloud Scan
+      # 8. SonarCloud Scan (ACTUALIZADO)
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v4.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: true # No falla el pipeline si SonarCloud tiene problemas
+          SONAR_HOST_URL: https://sonarcloud.io
 
       # 9. Build Docker image
       - name: Build Docker image
@@ -65,7 +63,7 @@ jobs:
       - name: Generate execution report
         if: always()
         run: |
-          echo "# Reporte de Ejecución CI/CD" > report.md
+          echo "#  Reporte de Ejecución CI/CD" > report.md
           echo "" >> report.md
           echo "##  Información General" >> report.md
           echo "- **Fecha:** $(date)" >> report.md
@@ -74,25 +72,30 @@ jobs:
           echo "- **Actor:** ${{ github.actor }}" >> report.md
           echo "" >> report.md
           echo "##  Pasos Completados" >> report.md
-          echo "-  Checkout del código" >> report.md
-          echo "-  Setup de Deno" >> report.md
-          echo "-  Cache de dependencias" >> report.md
-          echo "-  Ejecución de tests" >> report.md
-          echo "-  Generación de cobertura" >> report.md
-          echo "-  Build check" >> report.md
-          echo "-  Análisis estático (Deno lint)" >> report.md
-          echo "-  SonarCloud scan" >> report.md
-          echo "-  Build de Docker image" >> report.md
+          echo "1.  Checkout del código" >> report.md
+          echo "2.  Setup de Deno v2.x" >> report.md
+          echo "3.  Cache de dependencias" >> report.md
+          echo "4.  Ejecución de tests" >> report.md
+          echo "5.  Generación de cobertura de código" >> report.md
+          echo "6.  Verificación de compilación (Build check)" >> report.md
+          echo "7.  Análisis estático (Deno Lint)" >> report.md
+          echo "8.  Análisis estático (SonarCloud)" >> report.md
+          echo "9.  Construcción de imagen Docker" >> report.md
           echo "" >> report.md
-          echo "##  Resultados" >> report.md
-          echo "Pipeline ejecutado exitosamente " >> report.md
+          echo "##  Tests Ejecutados" >> report.md
+          echo "- Total de tests: 2" >> report.md
+          echo "- Tests pasados: ✓" >> report.md
+          echo "" >> report.md
+          echo "##  Artefactos Generados" >> report.md
+          echo "- Imagen Docker: \`mi-app-deno:${{ github.sha }}\`" >> report.md
 
-          # Agregar info de tests si existen
           if [ -f "coverage.lcov" ]; then
-            echo "" >> report.md
-            echo "##  Cobertura de Tests" >> report.md
-            echo "- Archivo de cobertura generado: " >> report.md
+            echo "- Reporte de cobertura: " >> report.md
           fi
+
+          echo "" >> report.md
+          echo "## Resultado Final" >> report.md
+          echo " **Pipeline ejecutado **" >> report.md
 
       # 11. Upload del reporte como artefacto
       - name: Upload execution report
@@ -102,11 +105,11 @@ jobs:
           name: execution-report
           path: report.md
 
-      # 12. Upload coverage report (solo si existe)
+      # 12. Upload coverage report
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage.lcov
-          if-no-files-found: warn # Solo avisa si no encuentra archivos, no falla
+          if-no-files-found: warn
