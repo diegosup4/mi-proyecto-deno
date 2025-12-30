@@ -25,7 +25,7 @@ jobs:
 
       # 3. Cache de dependencias
       - name: Cache Deno dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/deno
           key: ${{ runner.os }}-deno-${{ hashFiles('**/deno.json') }}
@@ -66,30 +66,30 @@ jobs:
         run: |
           echo "# Reporte de Ejecución CI/CD" > report.md
           echo "" >> report.md
-          echo "## Información General" >> report.md
+          echo "## ℹ️ Información General" >> report.md
           echo "- **Fecha:** $(date)" >> report.md
           echo "- **Commit:** ${{ github.sha }}" >> report.md
           echo "- **Branch:** ${{ github.ref_name }}" >> report.md
           echo "- **Actor:** ${{ github.actor }}" >> report.md
           echo "" >> report.md
           echo "##  Pasos Completados" >> report.md
-          echo "- - Checkout del código" >> report.md
-          echo "- - Setup de Deno" >> report.md
-          echo "- - Cache de dependencias" >> report.md
-          echo "- - Ejecución de tests" >> report.md
-          echo "- - Generación de cobertura" >> report.md
-          echo "- - Build check" >> report.md
-          echo "- - Análisis estático (Deno lint)" >> report.md
-          echo "- - SonarCloud scan" >> report.md
-          echo "- -Build de Docker image" >> report.md
+          echo "-  Checkout del código" >> report.md
+          echo "-  Setup de Deno" >> report.md
+          echo "-  Cache de dependencias" >> report.md
+          echo "-  Ejecución de tests" >> report.md
+          echo "-  Generación de cobertura" >> report.md
+          echo "-  Build check" >> report.md
+          echo "-  Análisis estático (Deno lint)" >> report.md
+          echo "-  SonarCloud scan" >> report.md
+          echo "-  Build de Docker image" >> report.md
           echo "" >> report.md
           echo "##  Resultados" >> report.md
-          echo "Pipeline ejecutado exitosamente ✨" >> report.md
+          echo "Pipeline ejecutado" >> report.md
 
       # 11. Upload del reporte como artefacto
       - name: Upload execution report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: execution-report
           path: report.md
@@ -97,7 +97,7 @@ jobs:
       # 12. Upload coverage report
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage.lcov
